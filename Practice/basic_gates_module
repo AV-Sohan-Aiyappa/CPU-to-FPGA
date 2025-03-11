@@ -1,9 +1,9 @@
-//basic_gates
+//basic_gates_module
 //made by Sohan on 10-03-2025
 //USAGE:
 // basic_gates is a circuit that has a two input AND,OR,NOT,NAND,NOR,XOR logic gates
 //a,b : single inputs 
-// y0,y1,y2,y3,y4,y5 : single outputs 
+// y0,y1,y2,y3,y4,y5 :  outputs 
 
 module basic_gates(
     input a,
