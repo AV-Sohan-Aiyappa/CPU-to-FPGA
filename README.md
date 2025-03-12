@@ -23,10 +23,8 @@ This repository contains my implementations of various projects from the **NAND2
 ## Contributions
 This repository is primarily for my personal learning, but feel free to fork and use any of the implementations. If you find improvements, feel free to submit a pull request!
 
-
-
-**Author:** [Your Name]  
-**Course:** NAND2TETRIS  
+**Author:** A V Sohan Aiyappa  
+**Course:** NAND2TETRIS & CPU-on-FPGA 
 **Language:** HACK HDL, Verilog  
-**Tools:** Hardware Simulator, Vivado, ModelSim
+**Tools:** Hardware Simulator, Xilinx Vivado
 
