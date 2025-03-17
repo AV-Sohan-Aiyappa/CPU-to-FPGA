@@ -1,5 +1,5 @@
 //basic_gates
-//
+// created by Sohan
 // Basic Logic Gates
 
 
