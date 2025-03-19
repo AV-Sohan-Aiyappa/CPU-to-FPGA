@@ -1,0 +1,14 @@
+
+// Bit16Gates.hdl
+// Created by Sohan on 17-03-2025
+// Implements 16-bit Not, And, and Or gates.
+
+CHIP Bit16Gates {
+    IN a[16], b[16];
+    OUT not16_out[16], and16_out[16], or16_out[16];
+
+    PARTS:
+    Not16(in=a, out=not16_out);
+    And16(a=a, b=b, out=and16_out);
+    Or16(a=a, b=b, out=or16_out);
+}

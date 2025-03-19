@@ -1,0 +1,21 @@
+
+// BasicGates.hdl
+// Created by Sohan
+// Implements Not, And, Or, and Xor using Nand.
+
+CHIP BasicGates {
+    IN a, b;
+    OUT nand_out, not_out, and_out, or_out, xor_out;
+
+    PARTS:
+    Nand(a=a, b=b, out=nand_out);
+    Nand(a=a, b=a, out=not_out);
+    Nand(a=a, b=b, out=and_temp);
+    Nand(a=and_temp, b=and_temp, out=and_out);
+    Nand(a=a, b=a, out=not_a);
+    Nand(a=b, b=b, out=not_b);
+    Nand(a=not_a, b=not_b, out=or_out);
+    Nand(a=a, b=not_b, out=xor_temp1);
+    Nand(a=not_a, b=b, out=xor_temp2);
+    Nand(a=xor_temp1, b=xor_temp2, out=xor_out);
+}
