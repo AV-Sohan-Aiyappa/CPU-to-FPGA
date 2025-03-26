@@ -1,0 +1,26 @@
+/// ALU.hdl
+/// Created by Sohan on 25-03-2025
+/// Performs arithmetic and logic operations on two 16-bit inputs
+
+CHIP ALU {
+    IN x[16], y[16], zx, nx, zy, ny, f, no;
+    OUT out[16], zr, ng;
+
+    PARTS:
+    Mux16(a=x, b=false, sel=zx, out=x1);
+    Not16(in=x1, out=x2);
+    Mux16(a=x1, b=x2, sel=nx, out=xFinal);
+    Mux16(a=y, b=false, sel=zy, out=y1);
+    Not16(in=y1, out=y2);
+    Mux16(a=y1, b=y2, sel=ny, out=yFinal);
+    Add16(a=xFinal, b=yFinal, out=addOut);
+    And16(a=xFinal, b=yFinal, out=andOut);
+    Mux16(a=andOut, b=addOut, sel=f, out=aluOut);
+    Not16(in=aluOut, out=aluOutNeg);
+    Mux16(a=aluOut, b=aluOutNeg, sel=no, out=out);
+    Or8Way(in=out[0..7], out=or8a);
+    Or8Way(in=out[8..15], out=or8b);
+    Or(a=or8a, b=or8b, out=orFinal);
+    Not(in=orFinal, out=zr);
+    And(a=out[15], b=true, out=ng);
+}
