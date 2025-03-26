@@ -20,6 +20,3 @@ module FullAdder(
     end
 endmodule
 
-/// Inc16.v
-/// Created by Sohan on 26-03-2025
-/// Increments a 16-bit value by 1 using case statement
