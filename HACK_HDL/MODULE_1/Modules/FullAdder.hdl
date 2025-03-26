@@ -1,0 +1,13 @@
+/// FullAdder.hdl
+/// Created by Sohan on 25-03-2025
+/// Computes the sum and carry of three 1-bit inputs
+
+CHIP FullAdder {
+    IN a, b, cin;
+    OUT sum, carry;
+
+    PARTS:
+    HalfAdder(a=a, b=b, sum=s1, carry=c1);
+    HalfAdder(a=s1, b=cin, sum=sum, carry=c2);
+    Or(a=c1, b=c2, out=carry);
+}
