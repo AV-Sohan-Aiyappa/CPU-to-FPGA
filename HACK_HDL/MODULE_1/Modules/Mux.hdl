@@ -1,0 +1,14 @@
+//Mux
+// created by Sohan
+// 2-way Multiplexer
+
+CHIP Mux {
+    IN a, b, sel;
+    OUT out;
+
+    PARTS:
+    Not(in=sel, out=nsel);
+    And(a=a, b=nsel, out=a_sel);
+    And(a=b, b=sel, out=b_sel);
+    Or(a=a_sel, b=b_sel, out=out);
+}
