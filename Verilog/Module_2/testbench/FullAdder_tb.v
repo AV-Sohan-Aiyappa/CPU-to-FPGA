@@ -4,11 +4,9 @@
 
 module FullAdder_tb;
 
-    // Testbench signals
     reg a, b, cin;
     wire sum, carry;
 
-    // Instantiate the FullAdder module
     FullAdder uut (
         .a(a),
         .b(b),
