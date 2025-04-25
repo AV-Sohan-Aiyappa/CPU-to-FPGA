@@ -1,3 +1,9 @@
+//ALU.v
+//Created by Sohan
+//16-bit ALU , opcodes: f,no(00= x+y, 01=not(x+y,10=a&b,11=not(a&b))
+
+
+
 module ALU (
     input [15:0] x, y,
     input zx, nx, zy, ny, f, no,
