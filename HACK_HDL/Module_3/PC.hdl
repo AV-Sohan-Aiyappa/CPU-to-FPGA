@@ -1,0 +1,15 @@
+//PC
+// created by Sohan on 18-04-2025
+// Program Counter: can load, increment, or reset
+
+CHIP PC {
+    IN in[16], load, inc, reset;
+    OUT out[16];
+
+    PARTS:
+    Inc16(in=cur, out=incOut);
+    Mux16(a=cur, b=incOut, sel=inc, out=incd);
+    Mux16(a=incd, b=in, sel=load, out=loaded);
+    Mux16(a=loaded, b=false, sel=reset, out=next);
+    Register(in=next, load=true, out=cur, out=out);
+}

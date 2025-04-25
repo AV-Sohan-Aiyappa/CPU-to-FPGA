@@ -1,0 +1,12 @@
+//Bit
+// created by Sohan on 18-04-2025
+// Stores a single bit with load control
+
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    Mux(a=out, b=in, sel=load, out=muxOut);
+    DFF(in=muxOut, out=out);
+}
