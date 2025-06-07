@@ -26,5 +26,9 @@ This repository is primarily for my personal learning, but feel free to fork and
 **Author:** A V Sohan Aiyappa  
 **Course:** NAND2TETRIS & CPU-on-FPGA <br>
 **Language:** HACK HDL, Verilog  
-**Tools:** Hardware Simulator, Xilinx Vivado
+**Tools:** Hardware Simulator, Xilinx Vivado Design Suite 
+
+Here is the link to PDF that contains hand-drawn circuits of all projects in Verilog: 
+
+[NAND2TETRIS-Circuits](https://drive.google.com/file/d/1uTyzhlkYtmuQnH1w5lwIg3Lk2xqoEM1K/view?usp=drivesdk)
 
