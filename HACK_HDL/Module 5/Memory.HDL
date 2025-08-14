@@ -1,0 +1,29 @@
+// Created by Sohan on 14-08-2025
+// Combines RAM16K, Screen, and Keyboard into a single address space.
+// Implementation of the Hack platform's Memory chip
+
+CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+
+    PARTS:
+    // Address ranges:
+    // RAM16K:   address[14..0] when address[14:13] == 00
+    // Screen:   address[12..0] when address[14:13] == 01
+    // Keyboard: fixed, only read
+
+    // Select lines for each device
+    DMux4Way(in=load, sel=address[14..13], a=ramLoad, b=screenLoad, c=kbdLoad, d=none);
+
+    // RAM16K
+    RAM16K(in=in, load=ramLoad, address=address[13..0], out=ramOut);
+
+    // Screen
+    Screen(in=in, load=screenLoad, address=address[12..0], out=screenOut);
+
+    // Keyboard (read-only, so load=0)
+    Keyboard(out=keyboardOut);
+
+    // Output mux
+    Mux4Way16(a=ramOut, b=screenOut, c=keyboardOut, d[16]=false, sel=address[14..13], out=out);
+}
