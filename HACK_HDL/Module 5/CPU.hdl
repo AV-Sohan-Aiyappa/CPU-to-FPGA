@@ -1,0 +1,121 @@
+// created by sohan on 14-08-2025
+// Function: Executes Hack A- and C-instructions.
+
+CHIP CPU {
+    IN  inM[16], instruction[16], reset;
+    OUT outM[16], writeM, addressM[15], pc[15];
+
+    PARTS:
+    // Instruction type 
+    Not(in=instruction[15], out=isA);                
+    Or(a=instruction[15], b=false, out=isC);          
+
+    //  Dest bits (d1,d2,d3)
+    Or(a=instruction[5], b=false, out=d1);          
+    Or(a=instruction[4], b=false, out=d2);           
+    Or(a=instruction[3], b=false, out=d3);           
+
+    // ALU control mapping 
+    Or(a=instruction[11], b=false, out=zx);
+    Or(a=instruction[10], b=false, out=nx);
+    Or(a=instruction[9],  b=false, out=zy);
+    Or(a=instruction[8],  b=false, out=ny);
+    Or(a=instruction[7],  b=false, out=f);
+    Or(a=instruction[6],  b=false, out=no);
+
+    //  Registers 
+    And(a=isC, b=d1, out=loadA_fromC);
+    Or(a=isA, b=loadA_fromC, out=loadA);
+
+    // A input
+    Mux16(a=aluOut, b=instruction, sel=isA, out=Ain);
+
+    // A register; also export A[14:0] to addressM
+    Register(in=Ain, load=loadA, out=Aout, out[0..14]=addressM);
+
+    // D loads on C-instruction & d2
+    And(a=isC, b=d2, out=loadD);
+    Register(in=aluOut, load=loadD, out=Dout);
+
+    // ALU input select for y via 'a'
+    Or(a=instruction[12], b=false, out=abit);    
+    Mux16(a=Aout, b=inM, sel=abit, out=Yin);
+
+    //  ALU
+    ALU(x=Dout, y=Yin, zx=zx, nx=nx, zy=zy, ny=ny, f=f, no=no,
+        out=aluOut, zr=zr, ng=ng);
+
+    // Memory interface
+    // outM always drives ALU result; memory writes when writeM=1
+    // writeM = isC & d3
+    And(a=isC, b=d3, out=writeM);
+    // Directly forward
+    // (No need for a gate: wire the bus)
+    // Note: In Hack HDL, it's valid to connect outputs directly.
+    // We still go through a trivial Mux to make the connection explicit.
+    Mux16(a=aluOut, b=aluOut, sel=false, out=outM);
+
+    // Jump logic
+    // j1 j2 j3 = instruction[2] [1] [0]
+    Or(a=instruction[2], b=false, out=j1);
+    Or(a=instruction[1], b=false, out=j2);
+    Or(a=instruction[0], b=false, out=j3);
+
+    // Flag helpers
+    Not(in=zr, out=nzr);        
+    Not(in=ng, out=nng);        
+    And(a=nzr, b=nng, out=pos); 
+    Or(a=ng, b=zr, out=le);     
+    Not(in=j1, out=nj1);
+    Not(in=j2, out=nj2);
+    Not(in=j3, out=nj3);
+
+    // Cases (active only when their j-bits pattern matches)
+    // 001: JLT -> ng
+    And(a=j1, b=nj2, out=case001_a);
+    And(a=case001_a, b=nj3, out=case001_sel);
+    And(a=case001_sel, b=ng, out=take001);
+
+    // 010: JEQ -> zr
+    And(a=nj1, b=j2, out=case010_a);
+    And(a=case010_a, b=nj3, out=case010_sel);
+    And(a=case010_sel, b=zr, out=take010);
+
+    // 011: JLE -> zr | ng  (use 'le')
+    And(a=j1, b=j2, out=case011_a);
+    And(a=case011_a, b=nj3, out=case011_sel);
+    And(a=case011_sel, b=le, out=take011);
+
+    // 100: JGT -> pos
+    And(a=nj1, b=nj2, out=case100_a);
+    And(a=case100_a, b=j3, out=case100_sel);
+    And(a=case100_sel, b=pos, out=take100);
+
+    // 101: JGE -> !ng (nng)
+    And(a=j1, b=nj2, out=case101_a);
+    And(a=case101_a, b=j3, out=case101_sel);
+    And(a=case101_sel, b=nng, out=take101);
+
+    // 110: JNE -> !zr (nzr)
+    And(a=nj1, b=j2, out=case110_a);
+    And(a=case110_a, b=j3, out=case110_sel);
+    And(a=case110_sel, b=nzr, out=take110);
+
+    // 111: JMP -> true (no flag needed)
+    And(a=j1, b=j2, out=case111_a);
+    And(a=case111_a, b=j3, out=take111);
+
+    Or(a=take001, b=take010, out=or1);
+    Or(a=take011, b=take100, out=or2);
+    Or(a=take101, b=take110, out=or3);
+    Or(a=or1, b=or2, out=or12);
+    Or(a=or12, b=or3, out=or123);
+    Or(a=or123, b=take111, out=jumpAny);
+    And(a=isC, b=jumpAny, out=pcLoadFromJump);
+
+    //Program Counter
+    // Load on jump or reset; otherwise increment.
+    Or(a=pcLoadFromJump, b=reset, out=pcLoad);
+    Not(in=pcLoad, out=pcInc);
+    PC(in=Aout, load=pcLoad, inc=pcInc, reset=reset, out=pc);
+}
