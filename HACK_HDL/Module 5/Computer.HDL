@@ -1,0 +1,24 @@
+// Created by Sohan on 14-08-2025
+//  The top-level Hack computer — ties CPU, Memory, and ROM32K together.
+// Works as a complete platform that can run Hack machine language programs.
+
+CHIP Computer {
+    IN reset;   
+    PARTS:
+    // The instruction memory (ROM32K) stores the program
+    ROM32K(address=pc, out=instruction);
+
+    // The main memory (RAM16K + Screen + Keyboard)
+    Memory(in=outM, load=writeM, address=addressM, out=inM);
+
+    // The CPU executes instructions and controls memory
+    CPU(
+        inM=inM,
+        instruction=instruction,
+        reset=reset,
+        outM=outM,
+        writeM=writeM,
+        addressM=addressM,
+        pc=pc
+    );
+}
