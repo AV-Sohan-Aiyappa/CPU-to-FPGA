@@ -1,12 +1,10 @@
 // HackControlVisualizerTop.v
 // Shows Hack CPU control signals for a 16-bit opcode on Basys3 LEDs.
-// SW[15:0]  = instruction opcode
-// btnU = zr flag, btnD = ng flag (since ALU is not instantiated)
+// SW[15:0] = instruction opcode
+// LEDs show decoded control signals
 
 module HackControlVisualizerTop(
     input  [15:0] sw,     // instruction
-    input         btnU,   // zr flag (1 = zero)
-    input         btnD,   // ng flag (1 = negative)
     output [15:0] led     // control signals visualized
 );
     wire isC = sw[15];
@@ -29,23 +27,31 @@ module HackControlVisualizerTop(
     wire writeM  =  isC & sw[3];
 
     // jump / PC load
-    // j2 j1 j0 = sw[2:0] == {JLT,JEQ,JGT} (Hack order is J1=JGT, J2=JEQ, J3=JLT in mnemonic,
-    // but in bits it's [2]=JLT, [1]=JEQ, [0]=JGT)
     wire jlt = sw[2];
     wire jeq = sw[1];
     wire jgt = sw[0];
-    wire zr  = btnU;
-    wire ng  = btnD;
 
-    wire pos = ~ng & ~zr;      // positive
-    wire takeJump = (jlt & ng) | (jeq & zr) | (jgt & pos);
-    wire loadPC   = isC & takeJump;
+    // For visualizer, we ignore actual zr/ng and just show if jump bits are set
+    wire loadPC = isC & (jlt | jeq | jgt);
 
-    // pack to LEDs
-    assign led[5:0]   = {zx, nx, zy, ny, f, no};  // ALU control
-    assign led[7:6]   = {selA, selY};             // mux selects
-    assign led[10:8]  = {loadA, loadD, writeM};   // A/D/M controls
-    assign led[11]    = loadPC;                   // PC control (jump taken)
-    assign led[15:12] = 4'b0000;                  // unused
+    // LED mapping as per requirement
+    assign led[0]  = zx;
+    assign led[1]  = nx;
+    assign led[2]  = zy;
+    assign led[3]  = ny;
+    assign led[4]  = f;
+    assign led[5]  = no;
+
+    assign led[6]  = selA;
+    assign led[7]  = selY;
+
+    assign led[8]  = loadA;
+    assign led[9]  = loadD;
+    assign led[10] = writeM;
+
+    assign led[11] = loadPC;
+
+    // remaining LEDs unused
+    assign led[15:12] = 4'b0000;
 
 endmodule
