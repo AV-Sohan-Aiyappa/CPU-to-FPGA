@@ -1,9 +1,9 @@
-// HackControlVisualizerTop.v
+// HackControlUnit.v
 // Shows Hack CPU control signals for a 16-bit opcode on Basys3 LEDs.
 // SW[15:0] = instruction opcode
 // LEDs show decoded control signals
 
-module HackControlVisualizerTop(
+module HackControlUnit(
     input  [15:0] sw,     // instruction
     output [15:0] led     // control signals visualized
 );
@@ -31,7 +31,6 @@ module HackControlVisualizerTop(
     wire jeq = sw[1];
     wire jgt = sw[0];
 
-    // For visualizer, we ignore actual zr/ng and just show if jump bits are set
     wire loadPC = isC & (jlt | jeq | jgt);
 
     // LED mapping as per requirement
