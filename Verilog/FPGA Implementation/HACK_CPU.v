@@ -11,7 +11,8 @@ module hack_cpu (
     output [3:0] blue
 );
 
-    // CPU Registers
+    // CPU
+    module cpu(
     wire i_bit, a_bit;
     reg [15:0] A_reg, D_reg;
     reg [15:0] instruction_history [0:19];
@@ -20,7 +21,7 @@ module hack_cpu (
     wire [15:0] inM, outM;
     wire [14:0] addressM;
     wire writeM;
-    wire zr_flag, ng_flag;
+        wire zr_flag, ng_flag;);
     
     // Button debouncing
     reg btnc_prev, btnc_stable;
@@ -158,7 +159,7 @@ always @(posedge clk_100MHz) begin
         end
     end
 end
-
+    endmodule 
 
     
     // VGA Controller
